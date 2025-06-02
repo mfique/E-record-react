@@ -1,9 +1,17 @@
-
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Header } from "./Header";
 import { Search, ChevronDown } from "lucide-react";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
 const statsData = [
   { title: "Total School Expenses", value: "1000000", currency: "Rwf", color: "text-blue-600" },
@@ -13,6 +21,8 @@ const statsData = [
 ];
 
 const expenses = [
+  { date: "10/5/2025", vendor: "Tyaza Ubwenge", purpose: "Buying teacher materials", amount: "850000", status: "Paid" },
+  { date: "10/5/2025", vendor: "Tyaza Ubwenge", purpose: "Buying teacher materials", amount: "850000", status: "Paid" },
   { date: "10/5/2025", vendor: "Tyaza Ubwenge", purpose: "Buying teacher materials", amount: "850000", status: "Paid" },
   { date: "10/5/2025", vendor: "Tyaza Ubwenge", purpose: "Buying teacher materials", amount: "850000", status: "Paid" },
   { date: "10/5/2025", vendor: "Tyaza Ubwenge", purpose: "Buying teacher materials", amount: "850000", status: "Paid" },
@@ -111,6 +121,39 @@ export const ExpenseManagement = () => {
                   ))}
                 </tbody>
               </table>
+            </div>
+
+            <div className="mt-6">
+              <Pagination>
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious href="#" />
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationLink href="#" isActive>
+                      1
+                    </PaginationLink>
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationLink href="#">2</PaginationLink>
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationLink href="#">3</PaginationLink>
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationEllipsis />
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationLink href="#">67</PaginationLink>
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationLink href="#">68</PaginationLink>
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationNext href="#" />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
             </div>
           </CardContent>
         </Card>

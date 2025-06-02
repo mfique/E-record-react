@@ -8,6 +8,8 @@ import { BudgetPlanning } from "@/components/BudgetPlanning";
 import { StaffPayroll } from "@/components/StaffPayroll";
 import { Inventory } from "@/components/Inventory";
 import { FinancialReport } from "@/components/FinancialReport";
+import { Notifications } from "@/components/Notifications";
+import { Settings } from "@/components/Settings";
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -28,6 +30,10 @@ const Index = () => {
         return <Inventory />;
       case "financial":
         return <FinancialReport />;
+      case "notifications":
+        return <Notifications />;
+      case "settings":
+        return <Settings />;
       default:
         return <Dashboard />;
     }
