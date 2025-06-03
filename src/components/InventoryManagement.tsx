@@ -12,30 +12,78 @@ import {
 } from "@/components/ui/select";
 import { useState } from "react";
 
-const statsData = [
-  { title: "Total Items", value: "50", color: "text-blue-600" },
-  { title: "In Stock", value: "30", color: "text-green-600" },
-  { title: "Low in Stock", value: "14", color: "text-orange-600" },
-  { title: "Finished in Stock", value: "10", color: "text-red-600" },
-];
-
-const categoryStats = [
-  { title: "Technology Items", value: "50", color: "text-blue-600" },
-  { title: "Academic Items", value: "30", color: "text-green-600" },
-  { title: "Maintenance", value: "14", color: "text-orange-600" },
-];
-
-const inventoryItems = [
-  { name: "Laptops", category: "Technology", quantity: 20, status: "In Stock", lastUpdated: "10/5/2025" },
-  { name: "Projectors", category: "Technology", quantity: 10, status: "Low Stock", lastUpdated: "10/5/2025" },
-  { name: "Textbooks", category: "Academic", quantity: 100, status: "In Stock", lastUpdated: "10/5/2025" },
-  { name: "Notebooks", category: "Academic", quantity: 5, status: "Low Stock", lastUpdated: "10/5/2025" },
-  { name: "Cleaning Supplies", category: "Maintenance", quantity: 0, status: "Out of Stock", lastUpdated: "10/5/2025" },
-  { name: "Printers", category: "Technology", quantity: 8, status: "In Stock", lastUpdated: "10/5/2025" },
-  { name: "Tablets", category: "Technology", quantity: 15, status: "In Stock", lastUpdated: "10/5/2025" },
-  { name: "Whiteboards", category: "Academic", quantity: 12, status: "In Stock", lastUpdated: "10/5/2025" },
-  { name: "Markers", category: "Academic", quantity: 3, status: "Low Stock", lastUpdated: "10/5/2025" },
-  { name: "Chairs", category: "Maintenance", quantity: 50, status: "In Stock", lastUpdated: "10/5/2025" }
+// Sample inventory data
+const inventoryData = [
+  { 
+    name: "Laptops",
+    category: "Technology",
+    quantity: 20,
+    status: "In Stock",
+    lastUpdated: "10/5/2025"
+  },
+  { 
+    name: "Projectors",
+    category: "Technology",
+    quantity: 10,
+    status: "Low Stock",
+    lastUpdated: "10/5/2025"
+  },
+  { 
+    name: "Textbooks",
+    category: "Academic",
+    quantity: 100,
+    status: "In Stock",
+    lastUpdated: "10/5/2025"
+  },
+  { 
+    name: "Notebooks",
+    category: "Academic",
+    quantity: 5,
+    status: "Low Stock",
+    lastUpdated: "10/5/2025"
+  },
+  { 
+    name: "Cleaning Supplies",
+    category: "Maintenance",
+    quantity: 0,
+    status: "Out of Stock",
+    lastUpdated: "10/5/2025"
+  },
+  { 
+    name: "Printers",
+    category: "Technology",
+    quantity: 8,
+    status: "In Stock",
+    lastUpdated: "10/5/2025"
+  },
+  { 
+    name: "Tablets",
+    category: "Technology",
+    quantity: 15,
+    status: "In Stock",
+    lastUpdated: "10/5/2025"
+  },
+  { 
+    name: "Whiteboards",
+    category: "Academic",
+    quantity: 12,
+    status: "In Stock",
+    lastUpdated: "10/5/2025"
+  },
+  { 
+    name: "Markers",
+    category: "Academic",
+    quantity: 3,
+    status: "Low Stock",
+    lastUpdated: "10/5/2025"
+  },
+  { 
+    name: "Chairs",
+    category: "Maintenance",
+    quantity: 50,
+    status: "In Stock",
+    lastUpdated: "10/5/2025"
+  }
 ];
 
 const categories = [
@@ -52,7 +100,7 @@ const statuses = [
   { value: "out-of-stock", label: "Out of Stock" }
 ];
 
-export const Inventory = () => {
+export const InventoryManagement = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedStatus, setSelectedStatus] = useState("all");
@@ -60,7 +108,7 @@ export const Inventory = () => {
   const itemsPerPage = 7;
 
   // Filter inventory based on search, category and status
-  const filteredInventory = inventoryItems.filter(item => {
+  const filteredInventory = inventoryData.filter(item => {
     const matchesSearch = searchQuery === "" || 
       item.name.toLowerCase().includes(searchQuery.toLowerCase());
 
@@ -81,37 +129,7 @@ export const Inventory = () => {
   return (
     <div className="bg-gray-50 min-h-screen">
       <Header />
-      <div className="p-8 space-y-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {statsData.map((stat, index) => (
-            <Card key={index} className="bg-white border-0 shadow-sm">
-              <CardContent className="p-6">
-                <div className="text-center">
-                  <div className={`text-2xl font-bold ${stat.color} mb-1`}>
-                    {stat.value}
-                  </div>
-                  <div className="text-sm text-gray-600">{stat.title}</div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {categoryStats.map((stat, index) => (
-            <Card key={index} className="bg-white border-0 shadow-sm">
-              <CardContent className="p-6">
-                <div className="text-center">
-                  <div className={`text-2xl font-bold ${stat.color} mb-1`}>
-                    {stat.value}
-                  </div>
-                  <div className="text-sm text-gray-600">{stat.title}</div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
+      <div className="p-8">
         <Card className="bg-white border-0 shadow-sm">
           <CardContent className="p-6">
             <div className="flex justify-between items-center mb-6">
@@ -162,7 +180,6 @@ export const Inventory = () => {
                     <th className="text-left py-3 text-sm font-medium text-gray-600">Quantity</th>
                     <th className="text-left py-3 text-sm font-medium text-gray-600">Status</th>
                     <th className="text-left py-3 text-sm font-medium text-gray-600">Last Updated</th>
-                    <th className="text-left py-3 text-sm font-medium text-gray-600">Action</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -202,6 +219,7 @@ export const Inventory = () => {
             <div className="flex items-center justify-center space-x-2 mt-6">
               <Button
                 variant="outline"
+                className="text-sm"
                 onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
                 disabled={currentPage === 1}
               >
@@ -209,20 +227,21 @@ export const Inventory = () => {
               </Button>
               <Button
                 variant={currentPage === 1 ? "default" : "outline"}
-                className={currentPage === 1 ? "bg-blue-600" : ""}
+                className={`text-sm ${currentPage === 1 ? "bg-blue-600" : ""}`}
                 onClick={() => setCurrentPage(1)}
               >
                 1
               </Button>
               <Button
                 variant={currentPage === 2 ? "default" : "outline"}
-                className={currentPage === 2 ? "bg-blue-600" : ""}
+                className={`text-sm ${currentPage === 2 ? "bg-blue-600" : ""}`}
                 onClick={() => setCurrentPage(2)}
               >
                 2
               </Button>
               <Button
                 variant="outline"
+                className="text-sm"
                 onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
                 disabled={currentPage === totalPages}
               >
@@ -234,4 +253,4 @@ export const Inventory = () => {
       </div>
     </div>
   );
-};
+}; 

@@ -1,4 +1,3 @@
-
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Header } from "./Header";
@@ -53,24 +52,24 @@ export const BudgetPlanning = () => {
         <Card className="bg-white border-0 shadow-sm">
           <CardContent className="p-6">
             <div className="flex justify-between items-center mb-6">
-              <h3 className="text-lg font-semibold text-gray-900">Budget Overview</h3>
+              <h3 className="text-lg font-medium">Budget Overview</h3>
               <Button className="bg-blue-600 hover:bg-blue-700 text-white">
                 Add new category
               </Button>
             </div>
             
-            <div className="space-y-6">
+            <div className="w-[900px]">
               {budgetCategories.map((category, index) => (
-                <div key={index} className="space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm font-medium text-gray-900">{category.name}</span>
-                    <span className="text-sm text-gray-600">{category.percentage}%</span>
+                <div key={index} className="mb-6">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-sm text-gray-600">{category.name}</span>
+                    <span className="text-sm text-gray-900">{category.percentage}%</span>
                   </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
+                  <div className="w-full bg-gray-100 rounded-full h-2">
                     <div 
-                      className={`${category.color} h-2 rounded-full transition-all duration-300`}
+                      className={`${category.color} h-2 rounded-full`}
                       style={{ width: `${category.percentage}%` }}
-                    ></div>
+                    />
                   </div>
                 </div>
               ))}

@@ -3,7 +3,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Header } from "./Header";
 import { Search, ChevronDown } from "lucide-react";
-import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer } from "recharts";
+import { 
+  BarChart, 
+  Bar, 
+  XAxis, 
+  YAxis, 
+  ResponsiveContainer,
+  Tooltip,
+  CartesianGrid
+} from "recharts";
+import { useState } from "react";
 import {
   Pagination,
   PaginationContent,
@@ -13,6 +22,14 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { usePagination } from "@/hooks/usePagination";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const statsData = [
   { title: "Total Payroll", value: "1000000", currency: "Rwf", color: "text-blue-600" },
@@ -22,31 +39,78 @@ const statsData = [
 ];
 
 const chartData = [
-  { month: 'Jan', amount: 150 },
-  { month: 'Feb', amount: 150 },
-  { month: 'Mar', amount: 150 },
-  { month: 'Apr', amount: 150 },
-  { month: 'May', amount: 150 },
-  { month: 'Jun', amount: 150 },
-  { month: 'July', amount: 150 },
-  { month: 'Aug', amount: 150 },
-  { month: 'Sept', amount: 150 },
-  { month: 'Oct', amount: 150 },
-  { month: 'Nov', amount: 150 },
-  { month: 'Dec', amount: 150 },
+  { month: 'Jan', amount: 150000 },
+  { month: 'Feb', amount: 150000 },
+  { month: 'Mar', amount: 150000 },
+  { month: 'Apr', amount: 150000 },
+  { month: 'May', amount: 150000 },
+  { month: 'Jun', amount: 150000 },
+  { month: 'July', amount: 150000 },
+  { month: 'Aug', amount: 150000 },
+  { month: 'Sept', amount: 150000 },
+  { month: 'Oct', amount: 150000 },
+  { month: 'Nov', amount: 150000 },
+  { month: 'Dec', amount: 150000 },
 ];
 
 const staff = [
-  { name: "Dushimire Aine", department: "Teacher", amount: "850000", date: "10/5/2025", status: "Paid" },
-  { name: "Dushimire Aine", department: "Discipline staff", amount: "850000", date: "10/5/2025", status: "Paid" },
-  { name: "Dushimire Aine", department: "Doctor", amount: "850000", date: "10/5/2025", status: "Paid" },
-  { name: "Dushimire Aine", department: "Teacher", amount: "850000", date: "10/5/2025", status: "Paid" },
-  { name: "Dushimire Aine", department: "Cook", amount: "850000", date: "10/5/2025", status: "Paid" },
-  { name: "Dushimire Aine", department: "Cleanliness", amount: "850000", date: "10/5/2025", status: "Paid" },
-  { name: "Dushimire Aine", department: "Teacher", amount: "850000", date: "10/5/2025", status: "Paid" },
+  { name: "John Smith", department: "Teacher", amount: "900000", date: "10/5/2025", status: "Paid" },
+  { name: "Sarah Johnson", department: "Administrator", amount: "1000000", date: "10/5/2025", status: "Pending" },
+  { name: "Michael Brown", department: "Teacher", amount: "850000", date: "10/5/2025", status: "Paid" },
+  { name: "Emily Davis", department: "Nurse", amount: "750000", date: "10/5/2025", status: "Paid" },
+  { name: "Robert Wilson", department: "Security", amount: "600000", date: "10/5/2025", status: "Pending" },
+  { name: "Lisa Anderson", department: "Teacher", amount: "850000", date: "10/5/2025", status: "Paid" },
+  { name: "David Taylor", department: "IT Staff", amount: "950000", date: "10/5/2025", status: "Paid" },
+  { name: "Jennifer Martin", department: "Librarian", amount: "700000", date: "10/5/2025", status: "Paid" },
+  { name: "James Wilson", department: "Discipline staff", amount: "650000", date: "10/5/2025", status: "Paid" },
+  { name: "Maria Garcia", department: "Cook", amount: "550000", date: "10/5/2025", status: "Paid" },
+  { name: "William Lee", department: "Teacher", amount: "850000", date: "10/5/2025", status: "Paid" },
+  { name: "Emma Thompson", department: "Counselor", amount: "800000", date: "10/5/2025", status: "Pending" },
+  { name: "Daniel Kim", department: "Physical Education", amount: "750000", date: "10/5/2025", status: "Paid" },
+  { name: "Sophie Chen", department: "Language Teacher", amount: "850000", date: "10/5/2025", status: "Paid" },
+  { name: "Omar Hassan", department: "Science Teacher", amount: "900000", date: "10/5/2025", status: "Paid" }
+];
+
+const departments = [
+  { value: "all", label: "All Departments" },
+  { value: "science", label: "Science" },
+  { value: "mathematics", label: "Mathematics" },
+  { value: "languages", label: "Languages" },
+  { value: "arts", label: "Arts" },
+  { value: "sports", label: "Sports" }
+];
+
+const payrollStatuses = [
+  { value: "all", label: "All Status" },
+  { value: "paid", label: "Paid" },
+  { value: "pending", label: "Pending" },
+  { value: "failed", label: "Failed" }
 ];
 
 export const StaffPayroll = () => {
+  const ITEMS_PER_PAGE = 10;
+  const {
+    currentPage,
+    totalPages,
+    visiblePages,
+    goToPage,
+    nextPage,
+    previousPage,
+    paginatedData
+  } = usePagination({
+    totalItems: staff.length,
+    itemsPerPage: ITEMS_PER_PAGE,
+  });
+
+  const currentStaff = paginatedData(staff);
+
+  const [selectedDepartment, setSelectedDepartment] = useState("all");
+  const [selectedStatus, setSelectedStatus] = useState("all");
+
+  const formatCurrency = (value: number) => {
+    return `${value.toLocaleString()} Rwf`;
+  };
+
   return (
     <div className="bg-gray-50 min-h-screen">
       <Header />
@@ -69,12 +133,43 @@ export const StaffPayroll = () => {
         <Card className="bg-white border-0 shadow-sm">
           <CardContent className="p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-6">Payroll Trend Overview</h3>
-            <div className="h-64">
+            <div className="h-[400px]">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={chartData} barCategoryGap="20%">
-                  <XAxis dataKey="month" axisLine={false} tickLine={false} className="text-xs" />
-                  <YAxis axisLine={false} tickLine={false} className="text-xs" />
-                  <Bar dataKey="amount" fill="#2563eb" radius={[4, 4, 0, 0]} />
+                <BarChart 
+                  data={chartData} 
+                  barCategoryGap="20%"
+                  margin={{ top: 10, right: 30, left: 0, bottom: 20 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                  <XAxis 
+                    dataKey="month" 
+                    axisLine={false} 
+                    tickLine={false} 
+                    tick={{ fill: '#6B7280', fontSize: 12 }}
+                  />
+                  <YAxis 
+                    axisLine={false} 
+                    tickLine={false} 
+                    tick={{ fill: '#6B7280', fontSize: 12 }}
+                    tickFormatter={formatCurrency}
+                  />
+                  <Tooltip
+                    cursor={{ fill: 'rgba(0, 0, 0, 0.05)' }}
+                    contentStyle={{
+                      backgroundColor: 'white',
+                      border: '1px solid #e5e7eb',
+                      borderRadius: '0.5rem',
+                      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                    }}
+                    formatter={(value: number) => [formatCurrency(value)]}
+                    labelStyle={{ color: '#374151', fontWeight: 600 }}
+                  />
+                  <Bar 
+                    dataKey="amount" 
+                    fill="#2563eb" 
+                    radius={[4, 4, 0, 0]}
+                    animationDuration={1500}
+                  />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -110,12 +205,31 @@ export const StaffPayroll = () => {
                 />
               </div>
               <div className="flex space-x-2">
-                <Button variant="outline" className="text-gray-600">
-                  Department <ChevronDown className="w-4 h-4 ml-2" />
-                </Button>
-                <Button variant="outline" className="text-gray-600">
-                  Status <ChevronDown className="w-4 h-4 ml-2" />
-                </Button>
+                <Select value={selectedDepartment} onValueChange={setSelectedDepartment}>
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Select department" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {departments.map((dept) => (
+                      <SelectItem key={dept.value} value={dept.value}>
+                        {dept.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+
+                <Select value={selectedStatus} onValueChange={setSelectedStatus}>
+                  <SelectTrigger className="w-[150px]">
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {payrollStatuses.map((status) => (
+                      <SelectItem key={status.value} value={status.value}>
+                        {status.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
 
@@ -132,7 +246,7 @@ export const StaffPayroll = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {staff.map((member, index) => (
+                  {currentStaff.map((member, index) => (
                     <tr key={index} className="border-b border-gray-50">
                       <td className="py-4 text-sm text-gray-900">{member.name}</td>
                       <td className="py-4 text-sm text-gray-600">{member.department}</td>
@@ -154,30 +268,35 @@ export const StaffPayroll = () => {
               <Pagination>
                 <PaginationContent>
                   <PaginationItem>
-                    <PaginationPrevious href="#" />
+                    <PaginationPrevious 
+                      onClick={previousPage}
+                      className="cursor-pointer"
+                      aria-disabled={currentPage === 1}
+                    />
                   </PaginationItem>
+                  
+                  {visiblePages.map((pageNum, idx) => (
+                    <PaginationItem key={idx}>
+                      {pageNum === -1 ? (
+                        <PaginationEllipsis />
+                      ) : (
+                        <PaginationLink
+                          onClick={() => goToPage(pageNum)}
+                          isActive={pageNum === currentPage}
+                          className="cursor-pointer"
+                        >
+                          {pageNum}
+                        </PaginationLink>
+                      )}
+                    </PaginationItem>
+                  ))}
+
                   <PaginationItem>
-                    <PaginationLink href="#" isActive>
-                      1
-                    </PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink href="#">2</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink href="#">3</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationEllipsis />
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink href="#">67</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink href="#">68</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationNext href="#" />
+                    <PaginationNext
+                      onClick={nextPage}
+                      className="cursor-pointer"
+                      aria-disabled={currentPage === totalPages}
+                    />
                   </PaginationItem>
                 </PaginationContent>
               </Pagination>
