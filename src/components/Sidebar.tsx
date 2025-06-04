@@ -19,24 +19,24 @@ const menuItems = [
 
 export const Sidebar = ({ activeTab, setActiveTab }: SidebarProps) => {
   return (
-    <div className="fixed top-0 left-0 h-screen w-64 bg-white border-r border-gray-100">
-      <div className="px-6 py-4 border-b border-gray-100">
+    <div className="fixed top-0 left-0 h-screen w-72 bg-white border-r border-gray-100">
+      <div className="px-8 py-6 border-b border-gray-100">
         <div className="flex items-center gap-2 mb-4">
-          <span className="text-blue-600 font-semibold text-xl">E-Record</span>
+          <span className="text-blue-600 font-semibold text-2xl">E-Record</span>
         </div>
-        <div className="bg-blue-600 text-white text-xs px-3 py-1 rounded-md inline-block">
+        <div className="bg-blue-600 text-white text-sm px-4 py-1.5 rounded-md inline-block">
           Accountant
         </div>
       </div>
 
-      <nav className="p-4 space-y-1">
+      <nav className="p-6 space-y-2">
         {menuItems.map((item) => {
           const Icon = item.icon;
           return (
             <button
               key={item.id}
               onClick={() => setActiveTab(item.id)}
-              className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm rounded-lg transition-colors ${
+              className={`w-full flex items-center gap-4 px-5 py-3 text-base rounded-lg transition-colors ${
                 activeTab === item.id
                   ? "bg-blue-600 text-white"
                   : "text-gray-600 hover:bg-gray-50"

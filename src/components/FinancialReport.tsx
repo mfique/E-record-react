@@ -105,29 +105,6 @@ export const FinancialReport = () => {
     <div className="bg-gray-50 min-h-screen">
       <Header />
       <div className="p-8">
-        {/* Welcome Header */}
-        <div className="flex justify-between items-center mb-8">
-          <h2 className="text-xl">Welcome to our platform John</h2>
-          <div className="flex gap-4">
-            <select 
-              value={selectedYear}
-              onChange={(e) => setSelectedYear(e.target.value)}
-              className="px-4 py-2 border rounded-md bg-white"
-            >
-              <option value="2025">2025</option>
-              <option value="2024">2024</option>
-            </select>
-            <select
-              value={selectedTerm}
-              onChange={(e) => setSelectedTerm(e.target.value)}
-              className="px-4 py-2 border rounded-md bg-white"
-            >
-              <option value="First Term">First Term</option>
-              <option value="Second Term">Second Term</option>
-            </select>
-          </div>
-        </div>
-
         {/* Financial Reports Title */}
         <h2 className="text-xl font-semibold mb-6">Financial Reports</h2>
 

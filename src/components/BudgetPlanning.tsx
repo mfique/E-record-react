@@ -1,7 +1,9 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Header } from "./Header";
 import { TrendingUp } from "lucide-react";
+import { useState } from "react";
 
 const statsData = [
   { title: "Total School Budget", value: "1000000", currency: "Rwf", change: "15%", icon: "📊" },
@@ -16,10 +18,90 @@ const budgetCategories = [
 ];
 
 export const BudgetPlanning = () => {
+  const [showAddCategory, setShowAddCategory] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Handle form submission here
+    setShowAddCategory(false);
+  };
+
+  if (showAddCategory) {
+    return (
+      <div className="bg-gray-50 min-h-screen">
+        <Header />
+        <div className="p-8">
+          <Card className="max-w-2xl mx-auto">
+            <CardContent className="p-6">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-xl font-semibold">Add New Budget Category</h2>
+              </div>
+              
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Category Name
+                    </label>
+                    <Input 
+                      placeholder="Enter category name"
+                      className="w-full"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Budget Allocation (%)
+                    </label>
+                    <Input 
+                      type="number"
+                      min="0"
+                      max="100"
+                      placeholder="Enter percentage allocation"
+                      className="w-full"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Description
+                    </label>
+                    <textarea 
+                      className="w-full px-3 py-2 border rounded-md bg-white text-sm"
+                      rows={4}
+                      placeholder="Category Description"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex gap-3 pt-4">
+                  <Button 
+                    type="submit"
+                    className="bg-blue-600 text-white hover:bg-blue-700"
+                  >
+                    Save Category
+                  </Button>
+                  <Button 
+                    type="button"
+                    variant="outline" 
+                    className="border-blue-600 text-blue-600"
+                    onClick={() => setShowAddCategory(false)}
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </form>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-gray-50 min-h-screen">
       <Header />
-      <div className="p-8 space-y-8">
+      <div className="p-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {statsData.map((stat, index) => (
             <Card key={index} className="bg-white border-0 shadow-sm">
@@ -49,11 +131,14 @@ export const BudgetPlanning = () => {
           ))}
         </div>
 
-        <Card className="bg-white border-0 shadow-sm">
+        <Card className="mt-8">
           <CardContent className="p-6">
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-lg font-medium">Budget Overview</h3>
-              <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+              <Button 
+                className="bg-blue-600 hover:bg-blue-700 text-white"
+                onClick={() => setShowAddCategory(true)}
+              >
                 Add new category
               </Button>
             </div>

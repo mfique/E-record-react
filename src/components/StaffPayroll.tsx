@@ -87,6 +87,33 @@ const payrollStatuses = [
   { value: "failed", label: "Failed" }
 ];
 
+const paymentModes = [
+  { value: "bank", label: "Bank payments" },
+  { value: "cash", label: "Cash" },
+  { value: "mobile", label: "Mobile Money" }
+];
+
+const positions = [
+  "Teacher",
+  "Administrator",
+  "Nurse",
+  "Security",
+  "IT Staff",
+  "Librarian",
+  "Discipline staff",
+  "Cook",
+  "Counselor",
+  "Physical Education",
+  "Language Teacher",
+  "Science Teacher"
+];
+
+const statuses = [
+  "Paid",
+  "Pending",
+  "Failed"
+];
+
 export const StaffPayroll = () => {
   const ITEMS_PER_PAGE = 10;
   const {
@@ -106,15 +133,22 @@ export const StaffPayroll = () => {
 
   const [selectedDepartment, setSelectedDepartment] = useState("all");
   const [selectedStatus, setSelectedStatus] = useState("all");
+  const [showAddPayroll, setShowAddPayroll] = useState(false);
 
   const formatCurrency = (value: number) => {
     return `${value.toLocaleString()} Rwf`;
   };
 
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Handle form submission here
+    setShowAddPayroll(false);
+  };
+
   return (
     <div className="bg-gray-50 min-h-screen">
       <Header />
-      <div className="p-8 space-y-8">
+      <div className="p-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {statsData.map((stat, index) => (
             <Card key={index} className="bg-white border-0 shadow-sm">
@@ -130,10 +164,10 @@ export const StaffPayroll = () => {
           ))}
         </div>
 
-        <Card className="bg-white border-0 shadow-sm">
+        <Card className="bg-white border-0 shadow-sm mt-8">
           <CardContent className="p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-6">Payroll Trend Overview</h3>
-            <div className="h-[400px]">
+            <div className="h-[300px]">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart 
                   data={chartData} 
@@ -176,7 +210,7 @@ export const StaffPayroll = () => {
           </CardContent>
         </Card>
 
-        <Card className="bg-white border-0 shadow-sm">
+        <Card className="bg-white border-0 shadow-sm mt-8">
           <CardContent className="p-6">
             <div className="flex justify-between items-center mb-6">
               <div>
@@ -187,8 +221,11 @@ export const StaffPayroll = () => {
                 <Button className="bg-blue-600 hover:bg-blue-700 text-white">
                   Export Report
                 </Button>
-                <Button className="bg-blue-600 hover:bg-blue-700 text-white">
-                  Add new Staff
+                <Button 
+                  className="bg-blue-600 hover:bg-blue-700 text-white"
+                  onClick={() => setShowAddPayroll(true)}
+                >
+                  Add new Payroll
                 </Button>
                 <Button variant="outline" className="border-blue-600 text-blue-600">
                   Generate payroll
@@ -233,7 +270,7 @@ export const StaffPayroll = () => {
               </div>
             </div>
 
-            <div className="overflow-x-auto">
+            <div className="w-full">
               <table className="w-full">
                 <thead>
                   <tr className="border-b border-gray-100">
@@ -264,7 +301,7 @@ export const StaffPayroll = () => {
               </table>
             </div>
 
-            <div className="mt-6">
+            <div className="flex items-center justify-center mt-6">
               <Pagination>
                 <PaginationContent>
                   <PaginationItem>
@@ -303,6 +340,117 @@ export const StaffPayroll = () => {
             </div>
           </CardContent>
         </Card>
+
+        {/* Modal */}
+        {showAddPayroll && (
+          <>
+            <div className="fixed inset-0 bg-black/30 z-40" onClick={() => setShowAddPayroll(false)} />
+            <div className="fixed inset-0 flex items-center justify-center z-50">
+              <Card className="max-w-2xl w-full mx-auto bg-white">
+                <CardContent className="p-6">
+                  <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-xl font-semibold">Add New Payroll</h2>
+                    <Button 
+                      variant="ghost" 
+                      className="text-gray-400 hover:text-gray-500"
+                      onClick={() => setShowAddPayroll(false)}
+                    >
+                      ✕
+                    </Button>
+                  </div>
+                  
+                  <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Staff Name
+                        </label>
+                        <Input 
+                          placeholder="Enter staff name"
+                          className="w-full"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Position
+                        </label>
+                        <Select>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select position" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {positions.map((position) => (
+                              <SelectItem key={position} value={position.toLowerCase()}>
+                                {position}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Salary Amount
+                        </label>
+                        <Input 
+                          type="number"
+                          placeholder="Enter amount"
+                          className="w-full"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Payment Status
+                        </label>
+                        <Select>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select status" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {statuses.map((status) => (
+                              <SelectItem key={status} value={status.toLowerCase()}>
+                                {status}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Payment Details
+                      </label>
+                      <textarea 
+                        className="w-full min-h-[100px] px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="Enter payment details or notes"
+                      />
+                    </div>
+
+                    <div className="flex justify-end gap-3 pt-4">
+                      <Button 
+                        type="button"
+                        variant="outline" 
+                        className="border-blue-600 text-blue-600"
+                        onClick={() => setShowAddPayroll(false)}
+                      >
+                        Cancel
+                      </Button>
+                      <Button 
+                        type="submit"
+                        className="bg-blue-600 text-white hover:bg-blue-700"
+                      >
+                        Save
+                      </Button>
+                    </div>
+                  </form>
+                </CardContent>
+              </Card>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

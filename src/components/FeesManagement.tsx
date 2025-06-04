@@ -88,6 +88,7 @@ export const FeesManagement = () => {
     unpaid: true
   });
 
+  const [showAddFees, setShowAddFees] = useState(false);
   const [selectedClass, setSelectedClass] = useState("Senior One");
   const [selectedStatus, setSelectedStatus] = useState("all");
 
@@ -116,6 +117,12 @@ export const FeesManagement = () => {
 
   const formatCurrency = (value: number) => {
     return `${value.toLocaleString()} Rwf`;
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Handle form submission here
+    setShowAddFees(false);
   };
 
   return (
@@ -220,7 +227,11 @@ export const FeesManagement = () => {
                 <Button className="bg-blue-600 hover:bg-blue-700 text-white">
                   Export Report
                 </Button>
-                <Button variant="outline" className="border-blue-600 text-blue-600">
+                <Button 
+                  variant="outline" 
+                  className="border-blue-600 text-blue-600"
+                  onClick={() => setShowAddFees(true)}
+                >
                   Add new Fees
                 </Button>
               </div>
@@ -234,7 +245,8 @@ export const FeesManagement = () => {
                   className="pl-10 w-64"
                 />
               </div>
-              <div className="flex space-x-2">
+              
+              <div className="flex gap-4">
                 <Select value={selectedClass} onValueChange={setSelectedClass}>
                   <SelectTrigger className="w-[150px]">
                     <SelectValue placeholder="Select class" />
@@ -333,6 +345,116 @@ export const FeesManagement = () => {
             </div>
           </CardContent>
         </Card>
+
+        {showAddFees && (
+          <>
+            <div className="fixed inset-0 bg-black/30 z-40" onClick={() => setShowAddFees(false)} />
+            <div className="fixed inset-0 flex items-center justify-center z-50">
+              <Card className="max-w-2xl w-full mx-auto bg-white">
+                <CardContent className="p-6">
+                  <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-xl font-semibold">Add New Fees</h2>
+                    <Button 
+                      variant="ghost" 
+                      className="text-gray-400 hover:text-gray-500"
+                      onClick={() => setShowAddFees(false)}
+                    >
+                      ✕
+                    </Button>
+                  </div>
+                  
+                  <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Student Name
+                        </label>
+                        <Input 
+                          placeholder="Enter student name"
+                          className="w-full"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Student Promotion
+                        </label>
+                        <Select>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select promotion" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {classes.map((className) => (
+                              <SelectItem key={className} value={className}>
+                                {className}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Student Class
+                        </label>
+                        <Select>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select class" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="a">A</SelectItem>
+                            <SelectItem value="b">B</SelectItem>
+                            <SelectItem value="c">C</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Fees Amount Paid
+                        </label>
+                        <Input 
+                          type="number"
+                          placeholder="Enter amount"
+                          className="w-full"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Confirmation Document
+                      </label>
+                      <Input 
+                        type="file"
+                        className="w-full"
+                        accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                      />
+                      <p className="text-xs text-gray-500 mt-1">Upload a supporting document</p>
+                    </div>
+
+                    <div className="flex justify-end gap-3 pt-4">
+                      <Button 
+                        type="button"
+                        variant="outline" 
+                        className="border-blue-600 text-blue-600"
+                        onClick={() => setShowAddFees(false)}
+                      >
+                        Cancel
+                      </Button>
+                      <Button 
+                        type="submit"
+                        className="bg-blue-600 text-white hover:bg-blue-700"
+                      >
+                        Save
+                      </Button>
+                    </div>
+                  </form>
+                </CardContent>
+              </Card>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

@@ -1,5 +1,6 @@
 import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Header } from "./Header";
 import {
   Select,
@@ -8,6 +9,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
 
 // Stats data at the top
 const statsCards = [
@@ -45,7 +48,30 @@ const expenseData = Array(12).fill({
   status: "Paid",
 });
 
+const categories = [
+  "Electronics",
+  "Stationery",
+  "Maintenance",
+  "Utilities",
+  "Transportation",
+  "Others"
+];
+
+const statuses = [
+  "Paid",
+  "Pending",
+  "Cancelled"
+];
+
 export const ExpenseManagement = () => {
+  const [showAddExpense, setShowAddExpense] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Handle form submission here
+    setShowAddExpense(false);
+  };
+
   return (
     <div className="bg-gray-50 min-h-screen">
       <Header />
@@ -54,7 +80,7 @@ export const ExpenseManagement = () => {
         <div className="grid grid-cols-4 gap-6 mb-8">
           {statsCards.map((stat, index) => (
             <div key={index} className="bg-white rounded-lg p-6">
-                <div className="text-center">
+              <div className="text-center">
                 <div className={`text-xl font-semibold ${stat.color} mb-1`}>
                   {stat.value}{stat.suffix && <span className="text-sm ml-1">{stat.suffix}</span>}
                 </div>
@@ -74,7 +100,11 @@ export const ExpenseManagement = () => {
                 <Button className="bg-blue-600 text-white hover:bg-blue-700">
                   Export Report
                 </Button>
-                <Button variant="outline" className="border-blue-600 text-blue-600">
+                <Button 
+                  variant="outline" 
+                  className="border-blue-600 text-blue-600"
+                  onClick={() => setShowAddExpense(true)}
+                >
                   Add new Expense
                 </Button>
               </div>
@@ -97,6 +127,11 @@ export const ExpenseManagement = () => {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Categories</SelectItem>
+                    {categories.map((category) => (
+                      <SelectItem key={category} value={category.toLowerCase()}>
+                        {category}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
                 <Select>
@@ -105,6 +140,11 @@ export const ExpenseManagement = () => {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Status</SelectItem>
+                    {statuses.map((status) => (
+                      <SelectItem key={status} value={status.toLowerCase()}>
+                        {status}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
@@ -179,6 +219,117 @@ export const ExpenseManagement = () => {
           </div>
         </div>
       </div>
+
+      {/* Modal */}
+      {showAddExpense && (
+        <>
+          <div className="fixed inset-0 bg-black/30 z-40" onClick={() => setShowAddExpense(false)} />
+          <div className="fixed inset-0 flex items-center justify-center z-50">
+            <Card className="max-w-2xl w-full mx-auto bg-white">
+              <CardContent className="p-6">
+                <div className="flex justify-between items-center mb-6">
+                  <h2 className="text-xl font-semibold">Add New Expenses</h2>
+                  <Button 
+                    variant="ghost" 
+                    className="text-gray-400 hover:text-gray-500"
+                    onClick={() => setShowAddExpense(false)}
+                  >
+                    ✕
+                  </Button>
+                </div>
+                
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Vendor
+                      </label>
+                      <Input 
+                        placeholder="Enter vendor name"
+                        className="w-full"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Amount
+                      </label>
+                      <Input 
+                        type="number"
+                        placeholder="Enter amount"
+                        className="w-full"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Category
+                      </label>
+                      <Select>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select category" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {categories.map((category) => (
+                            <SelectItem key={category} value={category.toLowerCase()}>
+                              {category}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Status
+                      </label>
+                      <Select>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {statuses.map((status) => (
+                            <SelectItem key={status} value={status.toLowerCase()}>
+                              {status}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Description
+                    </label>
+                    <textarea 
+                      className="w-full min-h-[100px] px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="Enter expense description"
+                    />
+                  </div>
+
+                  <div className="flex justify-end gap-3 pt-4">
+                    <Button 
+                      type="button"
+                      variant="outline" 
+                      className="border-blue-600 text-blue-600"
+                      onClick={() => setShowAddExpense(false)}
+                    >
+                      Cancel
+                    </Button>
+                    <Button 
+                      type="submit"
+                      className="bg-blue-600 text-white hover:bg-blue-700"
+                    >
+                      Save
+                    </Button>
+                  </div>
+                </form>
+              </CardContent>
+            </Card>
+          </div>
+        </>
+      )}
     </div>
   );
 };

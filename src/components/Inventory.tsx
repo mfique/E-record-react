@@ -57,7 +57,14 @@ export const Inventory = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedStatus, setSelectedStatus] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
+  const [showAddItem, setShowAddItem] = useState(false);
   const itemsPerPage = 7;
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Handle form submission here
+    setShowAddItem(false);
+  };
 
   // Filter inventory based on search, category and status
   const filteredInventory = inventoryItems.filter(item => {
@@ -112,7 +119,7 @@ export const Inventory = () => {
           ))}
         </div>
 
-        <Card className="bg-white border-0 shadow-sm">
+        <Card>
           <CardContent className="p-6">
             <div className="flex justify-between items-center mb-6">
               <div className="relative flex-1 max-w-md">
@@ -124,36 +131,44 @@ export const Inventory = () => {
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
-              <div className="flex space-x-2">
-                <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                  <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Category" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {categories.map((category) => (
-                      <SelectItem key={category.value} value={category.value}>
-                        {category.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+              <div className="flex items-center gap-4">
+                <div className="flex space-x-2">
+                  <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder="Category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {categories.map((category) => (
+                        <SelectItem key={category.value} value={category.value}>
+                          {category.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
 
-                <Select value={selectedStatus} onValueChange={setSelectedStatus}>
-                  <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {statuses.map((status) => (
-                      <SelectItem key={status.value} value={status.value}>
-                        {status.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                  <Select value={selectedStatus} onValueChange={setSelectedStatus}>
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder="Status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {statuses.map((status) => (
+                        <SelectItem key={status.value} value={status.value}>
+                          {status.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <Button 
+                  className="bg-blue-600 hover:bg-blue-700 text-white"
+                  onClick={() => setShowAddItem(true)}
+                >
+                  Add new item
+                </Button>
               </div>
             </div>
 
-            <div className="overflow-x-auto">
+            <div className="w-full">
               <table className="w-full">
                 <thead>
                   <tr className="border-b border-gray-100">
@@ -202,6 +217,7 @@ export const Inventory = () => {
             <div className="flex items-center justify-center space-x-2 mt-6">
               <Button
                 variant="outline"
+                className="text-sm"
                 onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
                 disabled={currentPage === 1}
               >
@@ -209,20 +225,21 @@ export const Inventory = () => {
               </Button>
               <Button
                 variant={currentPage === 1 ? "default" : "outline"}
-                className={currentPage === 1 ? "bg-blue-600" : ""}
+                className={`text-sm ${currentPage === 1 ? "bg-blue-600" : ""}`}
                 onClick={() => setCurrentPage(1)}
               >
                 1
               </Button>
               <Button
                 variant={currentPage === 2 ? "default" : "outline"}
-                className={currentPage === 2 ? "bg-blue-600" : ""}
+                className={`text-sm ${currentPage === 2 ? "bg-blue-600" : ""}`}
                 onClick={() => setCurrentPage(2)}
               >
                 2
               </Button>
               <Button
                 variant="outline"
+                className="text-sm"
                 onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
                 disabled={currentPage === totalPages}
               >
@@ -231,6 +248,128 @@ export const Inventory = () => {
             </div>
           </CardContent>
         </Card>
+
+        {/* Modal */}
+        {showAddItem && (
+          <>
+            <div className="fixed inset-0 bg-black/30 z-40" onClick={() => setShowAddItem(false)} />
+            <div className="fixed inset-0 flex items-center justify-center z-50">
+              <Card className="max-w-2xl w-full mx-auto bg-white">
+                <CardContent className="p-6">
+                  <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-xl font-semibold">Add New Item</h2>
+                    <Button 
+                      variant="ghost" 
+                      className="text-gray-400 hover:text-gray-500"
+                      onClick={() => setShowAddItem(false)}
+                    >
+                      ✕
+                    </Button>
+                  </div>
+                  
+                  <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Item Name
+                        </label>
+                        <Input 
+                          placeholder="Enter item name"
+                          className="w-full"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Category
+                        </label>
+                        <Select>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select category" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {categories.map((category) => (
+                              <SelectItem key={category.value} value={category.value}>
+                                {category.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Quantity
+                        </label>
+                        <Input 
+                          type="number"
+                          placeholder="Enter quantity"
+                          className="w-full"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Status
+                        </label>
+                        <Select>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select status" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {statuses.map((status) => (
+                              <SelectItem key={status.value} value={status.value}>
+                                {status.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Unit Price
+                        </label>
+                        <Input 
+                          type="number"
+                          placeholder="Enter unit price"
+                          className="w-full"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Description
+                      </label>
+                      <textarea 
+                        className="w-full min-h-[100px] px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="Enter item description"
+                      />
+                    </div>
+
+                    <div className="flex justify-end gap-3 pt-4">
+                      <Button 
+                        type="button"
+                        variant="outline" 
+                        className="border-blue-600 text-blue-600"
+                        onClick={() => setShowAddItem(false)}
+                      >
+                        Cancel
+                      </Button>
+                      <Button 
+                        type="submit"
+                        className="bg-blue-600 text-white hover:bg-blue-700"
+                      >
+                        Save
+                      </Button>
+                    </div>
+                  </form>
+                </CardContent>
+              </Card>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
