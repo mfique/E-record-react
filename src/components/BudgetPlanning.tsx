@@ -26,78 +26,6 @@ export const BudgetPlanning = () => {
     setShowAddCategory(false);
   };
 
-  if (showAddCategory) {
-    return (
-      <div className="bg-gray-50 min-h-screen">
-        <Header />
-        <div className="p-8">
-          <Card className="max-w-2xl mx-auto">
-            <CardContent className="p-6">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-semibold">Add New Budget Category</h2>
-              </div>
-              
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Category Name
-                    </label>
-                    <Input 
-                      placeholder="Enter category name"
-                      className="w-full"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Budget Allocation (%)
-                    </label>
-                    <Input 
-                      type="number"
-                      min="0"
-                      max="100"
-                      placeholder="Enter percentage allocation"
-                      className="w-full"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Description
-                    </label>
-                    <textarea 
-                      className="w-full px-3 py-2 border rounded-md bg-white text-sm"
-                      rows={4}
-                      placeholder="Category Description"
-                    />
-                  </div>
-                </div>
-
-                <div className="flex gap-3 pt-4">
-                  <Button 
-                    type="submit"
-                    className="bg-blue-600 text-white hover:bg-blue-700"
-                  >
-                    Save Category
-                  </Button>
-                  <Button 
-                    type="button"
-                    variant="outline" 
-                    className="border-blue-600 text-blue-600"
-                    onClick={() => setShowAddCategory(false)}
-                  >
-                    Cancel
-                  </Button>
-                </div>
-              </form>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="bg-gray-50 min-h-screen">
       <Header />
@@ -161,6 +89,76 @@ export const BudgetPlanning = () => {
             </div>
           </CardContent>
         </Card>
+
+        {/* Add Category Modal */}
+        {showAddCategory && (
+          <>
+            <div 
+              className="fixed inset-0 bg-black/30 z-40"
+              onClick={() => setShowAddCategory(false)}
+            />
+            <div className="fixed inset-0 flex items-center justify-center z-50">
+              <Card className="max-w-lg w-full mx-auto bg-white">
+                <CardContent className="p-6">
+                  <h2 className="text-xl font-semibold mb-6">Add New Budget Category</h2>
+                  
+                  <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Name
+                        </label>
+                        <Input 
+                          placeholder="Enter category name"
+                          className="w-full"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Amount
+                        </label>
+                        <Input 
+                          type="number"
+                          placeholder="Enter amount"
+                          className="w-full"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Description
+                        </label>
+                        <textarea 
+                          className="w-full px-3 py-2 border rounded-md bg-white text-sm"
+                          rows={4}
+                          placeholder="Category Description"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex gap-3 pt-4">
+                      <Button 
+                        type="button"
+                        variant="outline" 
+                        className="border-blue-600 text-blue-600 hover:bg-blue-50"
+                        onClick={() => setShowAddCategory(false)}
+                      >
+                        Cancel
+                      </Button>
+                      <Button 
+                        type="submit"
+                        className="bg-blue-600 text-white hover:bg-blue-700"
+                      >
+                        Save
+                      </Button>
+                    </div>
+                  </form>
+                </CardContent>
+              </Card>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

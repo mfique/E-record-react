@@ -65,11 +65,26 @@ const statuses = [
 
 export const ExpenseManagement = () => {
   const [showAddExpense, setShowAddExpense] = useState(false);
+  const [showEditExpense, setShowEditExpense] = useState(false);
+  const [showViewExpense, setShowViewExpense] = useState(false);
+  const [editingExpense, setEditingExpense] = useState(null);
+  const [viewingExpense, setViewingExpense] = useState(null);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Handle form submission here
     setShowAddExpense(false);
+    setShowEditExpense(false);
+  };
+
+  const handleEdit = (expense) => {
+    setEditingExpense(expense);
+    setShowEditExpense(true);
+  };
+
+  const handleView = (expense) => {
+    setViewingExpense(expense);
+    setShowViewExpense(true);
   };
 
   return (
@@ -175,10 +190,17 @@ export const ExpenseManagement = () => {
                       </td>
                       <td className="py-4 text-sm">
                         <div className="flex gap-2">
-                          <Button className="bg-blue-600 text-white hover:bg-blue-700 px-4 py-1 h-8 text-sm">
+                          <Button 
+                            className="bg-blue-600 text-white hover:bg-blue-700 px-4 py-1 h-8 text-sm"
+                            onClick={() => handleView(expense)}
+                          >
                             View
                           </Button>
-                          <Button variant="outline" className="border-blue-600 text-blue-600 px-4 py-1 h-8 text-sm">
+                          <Button 
+                            variant="outline" 
+                            className="border-blue-600 text-blue-600 px-4 py-1 h-8 text-sm"
+                            onClick={() => handleEdit(expense)}
+                          >
                             Edit
                           </Button>
                         </div>
@@ -325,6 +347,214 @@ export const ExpenseManagement = () => {
                     </Button>
                   </div>
                 </form>
+              </CardContent>
+            </Card>
+          </div>
+        </>
+      )}
+
+      {/* Edit Expense Modal */}
+      {showEditExpense && editingExpense && (
+        <>
+          <div className="fixed inset-0 bg-black/30 z-40" onClick={() => setShowEditExpense(false)} />
+          <div className="fixed inset-0 flex items-center justify-center z-50">
+            <Card className="max-w-2xl w-full mx-auto bg-white">
+              <CardContent className="p-6">
+                <div className="flex justify-between items-center mb-6">
+                  <h2 className="text-xl font-semibold">Edit Expenses</h2>
+                  <Button 
+                    variant="ghost" 
+                    className="text-gray-400 hover:text-gray-500"
+                    onClick={() => setShowEditExpense(false)}
+                  >
+                    ✕
+                  </Button>
+                </div>
+                
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Vendor
+                      </label>
+                      <Input 
+                        placeholder="Enter vendor name"
+                        className="w-full"
+                        defaultValue={editingExpense.vendor}
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Amount
+                      </label>
+                      <Input 
+                        type="number"
+                        placeholder="Enter amount"
+                        className="w-full"
+                        defaultValue={editingExpense.amount}
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Category
+                      </label>
+                      <Select>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select category" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {categories.map((category) => (
+                            <SelectItem key={category} value={category.toLowerCase()}>
+                              {category}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Status
+                      </label>
+                      <Select defaultValue={editingExpense.status.toLowerCase()}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {statuses.map((status) => (
+                            <SelectItem key={status} value={status.toLowerCase()}>
+                              {status}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Description
+                    </label>
+                    <textarea 
+                      className="w-full min-h-[100px] px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="Enter expense description"
+                      defaultValue={editingExpense.purpose}
+                    />
+                  </div>
+
+                  <div className="flex justify-end gap-3 pt-4">
+                    <Button 
+                      type="button"
+                      variant="outline" 
+                      className="border-blue-600 text-blue-600"
+                      onClick={() => setShowEditExpense(false)}
+                    >
+                      Cancel
+                    </Button>
+                    <Button 
+                      type="submit"
+                      className="bg-blue-600 text-white hover:bg-blue-700"
+                    >
+                      Save
+                    </Button>
+                  </div>
+                </form>
+              </CardContent>
+            </Card>
+          </div>
+        </>
+      )}
+
+      {/* View Expense Modal */}
+      {showViewExpense && viewingExpense && (
+        <>
+          <div className="fixed inset-0 bg-black/30 z-40" onClick={() => setShowViewExpense(false)} />
+          <div className="fixed inset-0 flex items-center justify-center z-50">
+            <Card className="max-w-2xl w-full mx-auto bg-white">
+              <CardContent className="p-6">
+                <div className="flex justify-between items-center mb-6">
+                  <h2 className="text-xl font-semibold">View Expenses</h2>
+                  <Button 
+                    variant="ghost" 
+                    className="text-gray-400 hover:text-gray-500"
+                    onClick={() => setShowViewExpense(false)}
+                  >
+                    ✕
+                  </Button>
+                </div>
+                
+                <div className="space-y-6">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Vendor
+                      </label>
+                      <Input 
+                        value={viewingExpense.vendor}
+                        className="w-full bg-gray-50"
+                        readOnly
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Amount
+                      </label>
+                      <Input 
+                        type="text"
+                        value={viewingExpense.amount}
+                        className="w-full bg-gray-50"
+                        readOnly
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Category
+                      </label>
+                      <Input 
+                        value="Electronics"
+                        className="w-full bg-gray-50"
+                        readOnly
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Status
+                      </label>
+                      <Input 
+                        value={viewingExpense.status}
+                        className="w-full bg-gray-50"
+                        readOnly
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Description
+                    </label>
+                    <textarea 
+                      className="w-full min-h-[100px] px-3 py-2 rounded-md border border-gray-300 bg-gray-50"
+                      value={viewingExpense.purpose}
+                      readOnly
+                    />
+                  </div>
+
+                  <div className="flex justify-end pt-4">
+                    <Button 
+                      type="button"
+                      variant="outline" 
+                      className="border-blue-600 text-blue-600"
+                      onClick={() => setShowViewExpense(false)}
+                    >
+                      Close
+                    </Button>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </div>

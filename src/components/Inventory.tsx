@@ -58,12 +58,27 @@ export const Inventory = () => {
   const [selectedStatus, setSelectedStatus] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
   const [showAddItem, setShowAddItem] = useState(false);
+  const [showEditItem, setShowEditItem] = useState(false);
+  const [showViewItem, setShowViewItem] = useState(false);
+  const [editingItem, setEditingItem] = useState(null);
+  const [viewingItem, setViewingItem] = useState(null);
   const itemsPerPage = 7;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Handle form submission here
     setShowAddItem(false);
+    setShowEditItem(false);
+  };
+
+  const handleEdit = (item) => {
+    setEditingItem(item);
+    setShowEditItem(true);
+  };
+
+  const handleView = (item) => {
+    setViewingItem(item);
+    setShowViewItem(true);
   };
 
   // Filter inventory based on search, category and status
@@ -200,10 +215,18 @@ export const Inventory = () => {
                       <td className="py-4 text-sm text-gray-600">{item.lastUpdated}</td>
                       <td className="py-4">
                         <div className="flex space-x-2">
-                          <Button variant="default" className="bg-blue-600 hover:bg-blue-700 text-white text-xs py-1 h-7">
+                          <Button 
+                            variant="default" 
+                            className="bg-blue-600 hover:bg-blue-700 text-white text-xs py-1 h-7"
+                            onClick={() => handleView(item)}
+                          >
                             View
                           </Button>
-                          <Button variant="outline" className="border-blue-600 text-blue-600 text-xs py-1 h-7">
+                          <Button 
+                            variant="outline" 
+                            className="border-blue-600 text-blue-600 text-xs py-1 h-7"
+                            onClick={() => handleEdit(item)}
+                          >
                             Edit
                           </Button>
                         </div>
@@ -365,6 +388,236 @@ export const Inventory = () => {
                       </Button>
                     </div>
                   </form>
+                </CardContent>
+              </Card>
+            </div>
+          </>
+        )}
+
+        {/* Edit Item Modal */}
+        {showEditItem && editingItem && (
+          <>
+            <div className="fixed inset-0 bg-black/30 z-40" onClick={() => setShowEditItem(false)} />
+            <div className="fixed inset-0 flex items-center justify-center z-50">
+              <Card className="max-w-2xl w-full mx-auto bg-white">
+                <CardContent className="p-6">
+                  <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-xl font-semibold">Edit Item</h2>
+                    <Button 
+                      variant="ghost" 
+                      className="text-gray-400 hover:text-gray-500"
+                      onClick={() => setShowEditItem(false)}
+                    >
+                      ✕
+                    </Button>
+                  </div>
+                  
+                  <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Item Name
+                        </label>
+                        <Input 
+                          placeholder="Enter item name"
+                          className="w-full"
+                          defaultValue={editingItem.name}
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Amount
+                        </label>
+                        <Input 
+                          type="number"
+                          placeholder="Enter amount"
+                          className="w-full"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Category
+                        </label>
+                        <Select defaultValue={editingItem.category.toLowerCase()}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select category" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {categories.map((category) => (
+                              <SelectItem key={category.value} value={category.value}>
+                                {category.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Supplier Name
+                        </label>
+                        <Input 
+                          placeholder="Enter supplier name"
+                          className="w-full"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Stock Status
+                        </label>
+                        <Select defaultValue={editingItem.status.toLowerCase().replace(/ /g, "-")}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select status" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {statuses.map((status) => (
+                              <SelectItem key={status.value} value={status.value}>
+                                {status.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Quantity
+                        </label>
+                        <Input 
+                          type="number"
+                          placeholder="Enter quantity"
+                          className="w-full"
+                          defaultValue={editingItem.quantity}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex justify-end gap-3 pt-4">
+                      <Button 
+                        type="button"
+                        variant="outline" 
+                        className="border-blue-600 text-blue-600"
+                        onClick={() => setShowEditItem(false)}
+                      >
+                        Cancel
+                      </Button>
+                      <Button 
+                        type="submit"
+                        className="bg-blue-600 text-white hover:bg-blue-700"
+                      >
+                        Save
+                      </Button>
+                    </div>
+                  </form>
+                </CardContent>
+              </Card>
+            </div>
+          </>
+        )}
+
+        {/* View Item Modal */}
+        {showViewItem && viewingItem && (
+          <>
+            <div className="fixed inset-0 bg-black/30 z-40" onClick={() => setShowViewItem(false)} />
+            <div className="fixed inset-0 flex items-center justify-center z-50">
+              <Card className="max-w-2xl w-full mx-auto bg-white">
+                <CardContent className="p-6">
+                  <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-xl font-semibold">View Item</h2>
+                    <Button 
+                      variant="ghost" 
+                      className="text-gray-400 hover:text-gray-500"
+                      onClick={() => setShowViewItem(false)}
+                    >
+                      ✕
+                    </Button>
+                  </div>
+                  
+                  <div className="space-y-6">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Item Name
+                        </label>
+                        <Input 
+                          value={viewingItem.name}
+                          className="w-full bg-gray-50"
+                          readOnly
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Amount
+                        </label>
+                        <Input 
+                          type="number"
+                          value="800000"
+                          className="w-full bg-gray-50"
+                          readOnly
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Category
+                        </label>
+                        <Input 
+                          value={viewingItem.category}
+                          className="w-full bg-gray-50"
+                          readOnly
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Supplier Name
+                        </label>
+                        <Input 
+                          value="Dushimire aine"
+                          className="w-full bg-gray-50"
+                          readOnly
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Stock Status
+                        </label>
+                        <Input 
+                          value={viewingItem.status}
+                          className="w-full bg-gray-50"
+                          readOnly
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Quantity
+                        </label>
+                        <Input 
+                          type="number"
+                          value={viewingItem.quantity}
+                          className="w-full bg-gray-50"
+                          readOnly
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex justify-end pt-4">
+                      <Button 
+                        type="button"
+                        variant="outline" 
+                        className="border-blue-600 text-blue-600"
+                        onClick={() => setShowViewItem(false)}
+                      >
+                        Close
+                      </Button>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
             </div>
